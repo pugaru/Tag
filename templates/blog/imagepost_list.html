@@ -1,0 +1,163 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% load thumbnail %}
+{% load tagging_tags %}
+
+{% block meta %}
+<title>{{ page_title }}</title>
+{% if page_description %}<meta name="description" content="{{ page_description }}"/>{% endif %}
+{% endblock meta %}
+<!-- http://192.168.0.105-->
+
+{% block content %}
+<div class="row no-gutters gallery infinite-container">
+  <div class="col-md-3 align-self-center tag-cloud">
+    <h4 class="text-muted">Categorias</h4>
+    {% for category in image_categories %}
+      <a class="tag {% if category.slug in request.path %}active{% endif %}" style="font-size:15px" href="{% url 'category-view' slug=category.slug %}">{{ category.name }}</a>
+    {% endfor %}
+
+    <h4 class="text-muted mt-3">Tags</h4>
+    {% for tag_ in tag_cloud %}
+      <a class="tag {% if tag_ == tag %}active{% endif %}" style="font-size:15px" href="{% url 'tag-view' tag=tag_ %}">{{ tag_ }}</a>
+    {% endfor %}
+      <a class="tag more-tag" href="{% url 'tag-list' %}">Mais tags</a>
+  </div>
+
+  {% if view == 'tag-view' %}
+  <div class="col-md-3 heading-col align-self-center">
+    <h1>{{ tag }}</h1>
+    <hr>
+    <h5>Fotos com a tag <br></h5><h2>#{{ tag }}</h2>
+    {% if request.user.is_superuser %}
+       <a href="{% url 'admin:tagging_tag_change' tag.pk %}" target="_blank">Editar tag</a>
+    {% endif %}<hr>
+    {% if view == 'tag-view' %}
+    {% if related_tags %}
+      <h5>Tags relacionadas</h5>
+        {% for related_tag in related_tags %}
+          <a href="{% url 'tag-view' tag=related_tag %}">#{{ related_tag }}</a>
+        {% endfor %}
+    {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if view == 'category-view' %}
+  <div class="col-md-3 heading-col align-self-center">
+    <h1>{{ category.name }}</h1>
+    <hr>
+    <p>{{ category.description }}</p>
+    {% if request.user.is_superuser %}
+       <a href="{% url 'admin:blog_imagecategory_change' category.pk %}" target="_blank">Editar categoria</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+<!-- Mural página inicial -->
+  {% for photo in photos.all %}
+    <div class="col-md-3 thumbnail-col infinite-item" style="
+    margin-bottom: 5px;" >
+      <div data-toggle="modal" data-target="#modal" data-slide="#slide-{{ photo.pk }}">
+        <img class="img-fluid thumbnail-image" src="{{ photo.image|thumbnail_url:'medium' }}" alt="{{photo.title}}" data-pin-nopin="true">
+        <div class="thumbnail-title">{{ photo.title }}</div>
+      </div>
+    </div>
+  {% endfor %}
+
+
+<!-- Blog -->
+  {% if view == 'homepage-view' %}
+  {% for page in featured_pages %}
+    <div class="col-md-3 thumbnail-col featured-col" style="
+    margin-bottom: 5px;">
+        <a href="{% url 'page-view' page.slug %}"><img class="img-fluid" src="{{ page.featured_image|thumbnail_url:'medium' }}" alt="{{ page.title }}" data-pin-nopin="true">
+        <div class="featured-title"><span>~ Blog ~ <br>{{ page.title }}</span></div>
+        </a>
+    </div>
+  {% endfor %}
+  {% endif %}
+
+<!-- Tags relacionadas
+  {% if view == 'tag-view' %}
+  {% if related_tags %}
+  <div class="col-md-3 align-self-center related-tags-col">
+    <h2>Tags relacionadas</h2>
+    <hr>
+      {% for related_tag in related_tags %}
+        <a href="{% url 'tag-view' tag=related_tag %}">#{{ related_tag }}</a>
+      {% endfor %}
+  </div>
+  {% endif %}
+  {% endif %}
+   -->
+</div>
+
+
+<div class="loading" style="display: none;">
+  {% include 'website/spinner.svg' %}
+</div>
+
+{% if page_obj.has_next %}
+  <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">Mais</a>
+{% endif %}
+
+<!-- http://192.168.0.105/#slide-8 -->
+<div class="modal gallery-modal" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button><br><br>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <div id="carouselControls" class="carousel" data-interval="false">
+                <div class="carousel-inner">
+                  {% for photo in all_photos %}
+                  <div id="slide-{{ photo.pk }}" class="carousel-item"  data-image="{{ photo.image|thumbnail_url:'carousel' }}" data-full-image="{{ photo.image.url }}" data-pk="{{ photo.pk }}" data-title="{{ photo.title }}" data-description="{{ photo.description }}" data-tags="{{ photo.tags }}" data-date="{{ photo.date }}" data-detail="{% url 'photo-detail' photo.pk %}" data-fb="https://www.facebook.com/sharer/sharer.php?u=https://{{request.META.HTTP_HOST}}{% url 'photo-detail' photo.pk %}&amp;src=sdkpreparse">
+                    <img class="carousel-image img-fluid" src="" alt="" data-pin-nopin="true"/>
+                  </div>
+                  {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselControls" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Anterior</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselControls" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Próxmo</span>
+                </a>
+              </div>
+            </div>
+            <div class="col-md-4 photo-info">
+              <div class="container h-100">
+                <div class="row h-100">
+                  <div class="col-12 h-75">
+                    <h2 class="photo-title d-inline"></h2> <a class="photo-detail-link" href="" style="font-size:15px;font-weight: bold;"> - Post completo <i class="fas fa-external-link-alt"></i></a>
+                    <hr class="my-1">
+                    <p><span class="photo-date" style="font-size:15px;"></span></p>
+                    <p><h6>Tags #<span class="photo-tags" style="font-size:15px;"></span></p></h6>
+                    <p class="photo-description"></p>
+                    {% if request.user.is_superuser %}
+                      <a class="edit-link" href="" target="_blank">Editar foto</a>
+                    {% endif %}
+                  </div>
+                  <div class="col-12">
+                    <div class="social-icons">
+                      <h3 class="h6">Compartilhe este post</h3>
+                      <a class="facebook-share fb-xfbml-parse-ignore" target="popup"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="row align-items-end h-100">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+      </div>
+    </div>
+  </div>
+<!-- End Modal -->
+{% endblock content %}

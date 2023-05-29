@@ -1,0 +1,67 @@
+{% load tagging_tags %}
+<nav class="navbar navbar-expand-lg fixed-top navbar-light">
+<div class="container navbar-container">
+  <a class="navbar-brand" href="{% url 'homepage-view' %}">{{ config.BLOG_NAME }}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbar">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item {% if view == 'homepage-view' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'homepage-view' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Categorias
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          {% for category in image_categories %}<center>
+            <a class="dropdown-item" href="{% url 'category-view' slug=category.slug %}">{{ category.name }}</a>
+          </center>{% endfor %}
+        </div>
+      </li>
+
+      <li class="nav-item dropdown">
+       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         Blog
+       </a>
+       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+         {% for item in nav_items %}<center>
+           <a class="nav-link {% if item.slug in request.path %}active{% endif %}" href="{% url 'page-view' slug=item.slug %}">{{ item.title }}</a>
+         </center>{% endfor %}
+       </div>
+      </li>
+
+       <!-- Blog em liks separados
+      {% for item in nav_items %}
+      <li class="nav-item">
+        <a class="nav-link {% if item.slug in request.path %}active{% endif %}" href="{% url 'page-view' slug=item.slug %}">{{ item.title }}</a>
+      </li>
+      {% endfor %}
+      -->
+      
+      <li class="nav-item">
+        <a class="nav-link {% if view == 'contact-page' %}active{% endif %}" href="{% url 'contact-page' %}">{{ config.CONTACT_PAGE_TITLE }}</a>
+      </li>
+
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      {% if request.user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin:index' %}" target="_blank">Admin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'admin:logout' %}?next=/">Logout</a>
+      </li>
+      {% endif %}
+
+	<a class="nav-link" href="#" onclick="toggleDarkMode(); return false;">
+		<i class="fas fa-moon dark-mode-icon"></i>
+	</a>
+
+      
+    </ul>
+  </div>
+</div>
+</nav>

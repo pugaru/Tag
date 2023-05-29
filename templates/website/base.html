@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+	{% block meta %}{% endblock meta %}
+	{% if config.SEO_NOINDEX == True %}<meta name="robots" content="noindex">{% endif %}
+	{% include 'website/styles.html' %}
+</head>
+<body>
+
+	{% include 'website/navigation.html' %}
+	<div class="container-fluid">  
+		{% block content %}
+		{% endblock content %}
+		<hr class="mx-5">
+
+		<div class="social-footer">
+			<h2>Redes Sociais</h2>
+			<a href="{{ config.FACEBOOK_URL }}" target="_blank"><i class="fab fa-facebook-square"></i></a>
+			<a href="{{ config.INSTAGRAM_URL }}" target="_blank"><i class="fab fa-instagram"></i></a>
+		</div>
+
+		<div class="footer">Copyright &copy; 2018 {{ config.BLOG_NAME }}</div>
+	</div>
+	{% include 'website/scripts.html' %}
+</body>
+</html>

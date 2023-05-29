@@ -1,0 +1,21 @@
+{% load static %}
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- Font Awesome -->
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css?family=Lato:100,300,400|Ubuntu+Condensed|Amatic+SC" rel="stylesheet"> 
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+{% if 'page_head' %}
+{% autoescape off %}
+	{{ page_head }}
+{% endautoescape %}
+{% endif %}
+
+{% if 'page_styles' %}
+<style>
+	{{ page_styles }}
+</style>
+{% endif %}

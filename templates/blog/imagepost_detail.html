@@ -1,0 +1,43 @@
+{% extends 'website/base.html' %}
+{% load static   %}
+{% load thumbnail %}
+
+{% block meta %}
+<title>{{ page_title }} - {{config.BLOG_NAME}}</title>
+{% if page_description %}<meta name="description" content="{{ page_description }}"/>{% endif %}
+{% endblock meta %}
+<!-- http://192.168.0.105/post/x -->
+{% block content %}
+<div class="row no-gutters">
+  <div class="col photo-detail">
+      <div class="row">
+        <div class="col-md-8">
+        	<img class="carousel-image img-fluid" src="{{ photo.image|thumbnail_url:'carousel' }}" alt="{{photo.title}}" data-pin-nopin="true">
+        </div>
+        <div class="col-md-4 photo-info">
+          <div class="container h-100">
+            <div class="row h-100">
+              <div class="col-12 h-75">
+                <h2 class="photo-title">{{ photo.title }}</h2>
+                <hr class="my-0">
+                <p><span class="photo-date">{{ photo.date }}</span></p>
+                <p><span class="photo-tags"># {{ photo.tags }}</span></p>
+                <p class="photo-description">{{ photo.description }}</p>
+                <a href="{% url 'homepage-view' %}#slide-{{photo.pk}}" role="button" class="btn btn-outline-dark btn-sm"><i class="far fa-images"></i> Galeria </a>
+              </div>
+              <div class="col-12" style="margin-top: auto;">
+                <div class="social-icons">
+                  <h3 class="h6">Compartilhe este post</h3>
+                  <a class="fb-xfbml-parse-ignore" target="popup" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://{{request.META.HTTP_HOST}}{% url 'photo-detail' photo.pk %}&amp;src=sdkpreparse','popup','width=600,height=500'); return false; " href="https://www.facebook.com/sharer/sharer.php?u=https://{{request.META.HTTP_HOST}}{% url 'photo-detail' photo.pk %}&amp;src=sdkpreparse'"><i class="fab fa-facebook-square"></i></a>
+                </div>
+                {% if request.user.is_superuser %}
+                  <a class="edit-link" href="{% url 'admin:blog_imagepost_change' photo.pk %}" target="_blank">Editar photo</a>
+                {% endif %}
+        	  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock content %}
