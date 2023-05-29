@@ -1,0 +1,32 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+boto3 = "*"
+botocore = "*"
+dj-database-url = "*"
+django-ckeditor = "*"
+django-js-asset = "*"
+django-storages = "*"
+django-tagging = "*"
+django-widget-tweaks = "*"
+docutils = "==0.14"
+easy-thumbnails = "*"
+gunicorn = "*"
+jmespath = "*"
+psycopg2 = "==2.7.3.2"
+python-dateutil = "*"
+python-decouple = "*"
+pytz = "*"
+s3transfer = "*"
+six = "*"
+whitenoise = "*"
+Django = "*"
+Pillow = "*"
+
+[requires]
+python_version = "3.6"
